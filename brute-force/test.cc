@@ -4,5 +4,6 @@
 using namespace std;
 
 int main() {
-    cout << '1' + to_string(2) << "\n";
+    string tmp = " " + 1;
+    cout << tmp << "\n";
 }
