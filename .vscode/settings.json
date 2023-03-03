@@ -4,6 +4,11 @@
         "iostream": "cpp",
         "vector": "cpp",
         "algorithm": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "ios": "cpp",
+        "set": "cpp",
+        "deque": "cpp"
     }
 }
