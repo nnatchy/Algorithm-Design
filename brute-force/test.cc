@@ -80,21 +80,67 @@ int peak(vector<int> &dp) {
     return dp[start];
 }
 
-int max_3(vector<int> &dp) {
-
-}
+// void gen(int n, int k, vector<bool> &used, int len, int chosen) {
+//     if (len < n) {
+//         if (len - chosen < n - k) {
+//             used[len] = false;
+//             gen(v, n, k, used, len + 1, chosen);
+//         }
+//         if (chosen < n) {
+//             used[len] = true;
+//             gen(v, n, k, used, len + 1, chosen + 1);
+//         }
+//     } else {
+//         vector<int> store; int sum = 0;
+//         for (int i = 0; i < used.size(); i++) {
+//             if (used[i]) {
+//                 sum += i + 1;
+//                 store.push_back(i + 1);
+//             }
+//         }
+//         if (sum == n) {
+//             for (int i = 0; i < store.size(); i++) {
+//                 cout << store[i] << " ";
+//             }
+//             cout << "\n";
+//         }
+//         return;
+//     }
+// }
+void gen(vector<vector<int> > &sol, vector<int>& tmp, int n, int k, int len, int chosen) {
+        if (len < n) {
+            if (len - chosen < n - k) {
+                tmp[len] = 0;
+                gen(sol, tmp, n, k, len + 1, chosen);
+            }
+            if (chosen < k) {
+                tmp[len] = 1;
+                gen(sol, tmp, n, k, len + 1, chosen + 1);
+            }
+        } else {
+            vector<int> store; int sum = 0;
+            for (int i = 0; i < tmp.size(); i++) {
+                if (tmp[i] == 1) {
+                    store.push_back(i + 1);
+                    sum += i + 1;
+                }
+            }
+            sol.push_back(store);
+        }
+    }
 
 int main() {
-    vector<int> dp;
-    int n = 10;
-    int start = 0;
-    for (int i = 0; i < n; i++) {
-        ll inp;
-        cin >> inp;
-        dp.push_back(inp);
+    // n = m, k = n;
+    int n, k;
+    cin >> k >> n;
+    vector<vector<int> > sol;
+    vector<int> used(n);
+    gen(sol, used, n, k, 0, 0);
+    for (auto &v : sol) {
+        for (int i = 0; i < v.size(); i++) {
+            cout << v[i] << " ";
+        }
+        cout << "\n";
     }
-    // int target;
-    // cin >> target;
-    cout << peakDetect(dp, 0, n) << '\n';
 }
 
