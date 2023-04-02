@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "vector": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "iostream": "cpp",
+        "system_error": "cpp",
+        "numeric": "cpp",
+        "__locale": "cpp"
+    }
+}
