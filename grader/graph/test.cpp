@@ -1,58 +1,58 @@
-#include <climits>
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <algorithm>
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<stack>
+#include<algorithm>
+#include<numeric>
+#include<limits.h>
+
+#define ll long long
+#define pll pair<ll, ll>
+#define lll tuple<ll, ll, ll>
+#define minHeap priority_queue<pll, vector<ll>, greater<pll> >;
+#define minHeapTuple priority_queue<lll, vector<lll>, greater<lll> >;
+#define IO ios_base::sync_with_stdio(false); cin.tie(0);
 
 using namespace std;
 
-int dijkstra(vector<pair<int, int> > graph[], int src, int target, int V){
-    // min heap
-    priority_queue<pair <int,int> , vector<pair<int,int > >, greater<pair<int,int> > > pq;
-    vector<int> dist (V, INT_MAX);
-    dist[src] = 0;
-    pq.push(make_pair(0,src));
-
-    while (!pq.empty()){
-        int u = pq.top().second;
+int main() {
+    IO;
+    ll n, m, k;
+    cin >> n >> m >> k;
+    vector<ll> serverHacked(k);
+    vector<ll> nodes(n, INT_MAX);
+    priority_queue<pll, vector<pll>, greater<pll> > pq;
+    for (int i = 0; i < k; i++) {
+        cin >> serverHacked[i];
+    }
+    vector<ll> c(n);
+    for (int i = 0; i < n; i++) {
+        cin >> c[i];
+    }
+    vector<vector<ll> > vl(n);
+    for (int i = 0; i < m; i++) {
+        ll a, b;
+        cin >> a >> b;
+        vl[a].push_back(b);
+        vl[b].push_back(a);
+    }
+    for (int i = 0; i < k; i++) {
+        pq.push(make_pair(c[serverHacked[i]], serverHacked[i]));
+        nodes[serverHacked[i]] = c[serverHacked[i]];
+    }
+    while (!pq.empty()) {
+        pll current = pq.top();
         pq.pop();
-
-        for (auto x : graph[u]){
-            int v = x.first;
-            int wt = x.second;
-            if (dist[v] > dist[u] + wt){
-                dist[v] = dist[u] + wt;
-                pq.push(make_pair(dist[v],v));
+        ll val = current.first;
+        ll pos = current.second;
+        for (auto &x : vl[pos]) {
+            if (val + c[x] < nodes[x]) {
+                nodes[x] = val + c[x];
+                pq.push(make_pair(nodes[x], x));
             }
         }
-        if (u == target) return dist[u];
     }
-}
-
-int main(){
-
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
-    int n,m,k,v,start,a,b,w;
-    cin >> n >> m >> k;
-    cin >> v;
-
-    vector<int> target;
-    while (k--){
-        cin >> start;
-        target.push_back(start);
-    }
-
-    vector<pair<int,int> > graph[n+1];
-    while (m--){
-        cin >> a >> b >> w;
-        graph[a].push_back(make_pair(b,w));  
-    }
-
-    int ans = INT_MAX;
-    for (auto start : target){
-        int tmp = dijkstra(graph, start, v, n);
-        ans = min(ans, tmp);
-    }
-
-    cout << ans << "\n";
+    // for (auto &x : nodes) cout << x << " ";
+    // cout << "\n";
+    cout << *max_element(nodes.begin(), nodes.end()) << "\n";
 }

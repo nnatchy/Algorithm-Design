@@ -24,7 +24,6 @@ int main()
     cin >> costStart;
     c[0].push_back(make_pair(1, costStart));
     c[1].push_back(make_pair(0, costStart));
-    vector<ll> nodes(n, INT_MAX);
     for (int i = 2; i < n; i++) {
         ll cntRoad;
         cin >> cntRoad;
@@ -32,8 +31,10 @@ int main()
         for (int j = 0; j < cntRoad; j++) {
             ll connectRoad, cost;
             cin >> connectRoad >> cost;
-            c[i].push_back(make_pair(connectRoad, cost));
+            c[i].push_back(make_pair(connectRoad - 1, cost));
+            c[connectRoad - 1].push_back(make_pair(i, cost));
         }
+        vector<ll> nodes(n, INT_MAX);
         priority_queue<pll, vector<pll>, greater<pll> > pq;
         pq.push(make_pair(0, 0)); // val, ind
         nodes[0] = 0;
@@ -43,9 +44,11 @@ int main()
             ll val = current.first;
             ll pos = current.second;
             for (auto &x : c[pos]) {
-                if (val + x.second < nodes[x.first]) {
-                    nodes[x.first] = val + x.second;
-                    pq.push(make_pair(nodes[x.first], x.first));
+                ll newPos = x.first;
+                ll hasCost = x.second;
+                if (val + hasCost < nodes[newPos]) {
+                    nodes[newPos] = val + hasCost;
+                    pq.push(make_pair(nodes[newPos], newPos));
                 }
             }
         }
