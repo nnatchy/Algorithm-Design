@@ -1,58 +1,68 @@
-#include<iostream>
+#include <iostream>
 #include<vector>
 #include<queue>
 #include<stack>
-#include<algorithm>
 #include<numeric>
+#include<algorithm>
+#include<tuple>
 #include<limits.h>
 
 #define ll long long
 #define pll pair<ll, ll>
-#define lll tuple<ll, ll, ll>
-#define minHeap priority_queue<pll, vector<ll>, greater<pll> >;
-#define minHeapTuple priority_queue<lll, vector<lll>, greater<lll> >;
+#define lll tuple<int, int, int>
 #define IO ios_base::sync_with_stdio(false); cin.tie(0);
 
 using namespace std;
-
-int main() {
-    IO;
-    ll n, m, k;
-    cin >> n >> m >> k;
-    vector<ll> serverHacked(k);
-    vector<ll> nodes(n, INT_MAX);
-    priority_queue<pll, vector<pll>, greater<pll> > pq;
-    for (int i = 0; i < k; i++) {
-        cin >> serverHacked[i];
+const int N = 250010;
+vector<int > g[N];
+int st[3];
+int dis[3][N];
+int main(){
+    ios_base::sync_with_stdio(false); cin.tie(0);
+    int n;
+    cin >> n >> st[0] >> st[1] >> st[2];
+    for(int i=1;i<=n;i++){
+        int num;
+        cin >> num;
+        while(num--){
+            int num2;
+            cin >> num2;
+            g[i].push_back(num2);
+        }
     }
-    vector<ll> c(n);
-    for (int i = 0; i < n; i++) {
-        cin >> c[i];
-    }
-    vector<vector<ll> > vl(n);
-    for (int i = 0; i < m; i++) {
-        ll a, b;
-        cin >> a >> b;
-        vl[a].push_back(b);
-        vl[b].push_back(a);
-    }
-    for (int i = 0; i < k; i++) {
-        pq.push(make_pair(c[serverHacked[i]], serverHacked[i]));
-        nodes[serverHacked[i]] = c[serverHacked[i]];
-    }
-    while (!pq.empty()) {
-        pll current = pq.top();
-        pq.pop();
-        ll val = current.first;
-        ll pos = current.second;
-        for (auto &x : vl[pos]) {
-            if (val + c[x] < nodes[x]) {
-                nodes[x] = val + c[x];
-                pq.push(make_pair(nodes[x], x));
+    queue<int > que;
+    for(int k=0;k<3;k++){
+        for(int i=1;i<=n;i++)
+            dis[k][i] = 1e9;
+        dis[k][st[k]] = 0;
+        que.push(st[k]);
+        while(!que.empty()){
+            int now = que.front();
+            que.pop();
+            for(auto x:g[now]){
+                if(dis[k][x] <= dis[k][now] + 1)  continue;
+                dis[k][x] = dis[k][now] + 1;
+                que.push(x);
             }
         }
     }
-    // for (auto &x : nodes) cout << x << " ";
-    // cout << "\n";
-    cout << *max_element(nodes.begin(), nodes.end()) << "\n";
+    int ans = 1e9;
+    
+    for (int i = 0; i < 3; i++) {
+        for (int j = 1; j <= n; j++) {
+            cout << dis[i][j] << " ";
+        }
+        cout << "\n";
+    }
+
+    for(int i=1;i<=n;i++){
+        int minn = -1e9;
+        for(int k=0;k<3;k++){
+            minn = max(minn,dis[k][i]);
+        }
+        ans = min(ans,minn);
+    }
+    cout << ans << '\n';
+    return 0;
 }
+
