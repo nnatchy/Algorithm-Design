@@ -7,7 +7,7 @@ ll dp[31][2][31][31];
 using namespace std;
 
 ll solve(ll pos, ll colour, ll sameColour, ll countK, ll &N, ll &M, ll &K) {
-    if (sameColour >= M || countK > K) return 0;
+    if (sameColour >= M || countK > K || N - pos < K - countK)  return 0;
     if (dp[pos][colour][sameColour][countK] != 0) return dp[pos][colour][sameColour][countK];
     if (pos == N - 1) {
         if (countK == K) return 1;
