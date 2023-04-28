@@ -12,8 +12,6 @@
 
 using namespace std;
 
-ll ans = 0;
-
 int main() {
     ll n;
     cin >> n;
