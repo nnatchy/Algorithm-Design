@@ -12,38 +12,41 @@
 using namespace std;
 
 ll n, k;
-vector<vector<ll> > vl;
-vector<ll> bestFit;
+vector<vector<ll> > vl, bookOwner;
+vector<ll> gotSet;
 vector<ll> P; // cost set
 ll ans = 1e9;
 
-void solve(ll step, vector<bool> &visited, vector<ll> &gotSet, ll currSum, ll ub) {
+void solve(ll step, ll currSum) {
     if (currSum >= ans) return;
-    if (step >= k) {
-        for (auto &x : gotSet) {
-            if (!x) return;
-        }
+    if (step == n) { // got all books
         ans = min(ans, currSum);
         return;
     }
-    solve(step + 1, visited, gotSet, currSum, ub);
-    for (auto &x : vl[step]) {
-        gotSet[x] = true;
+    if (gotSet[step]) { // alr have book
+        solve(step + 1, currSum);
+        return;
+    } 
+    for (auto &w : bookOwner[step]) {
+        if (P[w] + currSum >= ans) continue;
+        for (auto &x : vl[w]) {
+            gotSet[x]++;
+        }
+        solve(step + 1, currSum + P[w]);
+        for (auto &x : vl[w]) {
+            gotSet[x]--;
+        }
     }
-    solve(step + 1, visited, gotSet, currSum + P[step], ub);
-    for (auto &x : vl[step]) {
-        gotSet[x] = false;
-    }
-    
 }
 
 int main()
 {
     IO;
     cin >> n >> k;
-    bestFit.resize(k);
+    bookOwner.resize(n);
     vl.resize(n);
-    P.resize(k);
+    gotSet.resize(n, 0);
+    P.resize(n, 0);
     for (int j = 0; j < k; j++) {
         ll cnt;
         cin >> P[j] >> cnt;
@@ -52,43 +55,9 @@ int main()
             cin >> a;
             a--;
             vl[j].push_back(a);
+            bookOwner[a].push_back(j);
         }
-        bestFit[j] = max(bestFit[j], P[j]);
     }
-    ll ub = 0;
-    for (auto &x : bestFit) ub += x;
-    vector<bool> visited(n);
-    vector<ll> gotSet(n, 0);
-    solve(0, visited, gotSet, 0, ub);
+    solve(0, 0);
     cout << ans << "\n";
 }
-
-/*
-4 3
-10 3 1 2 3
-30 2 1 4
-20 2 3 4
-
-7 8
-54 3 2 7 1
-52 1 6
-2 3 1 4 6
-100 3 2 4 7
-62 2 6 1
-88 2 6 3
-38 1 7
-26 3 3 5 7
-
-20 11
-91 4 17 19 8 14
-85 4 7 9 15 2
-74 9 13 16 18 3 9 10 2 4 1
-40 3 2 5 6
-62 9 1 16 5 8 2 20 14 10 3
-14 10 10 12 14 3 19 2 9 6 11 4
-83 6 6 1 10 16 2 15
-99 7 4 8 15 7 17 19 10
-41 5 3 8 11 12 18
-18 9 18 14 13 12 19 2 5 1 6
-94 9 4 14 20 5 3 2 15 10 19
-*/
