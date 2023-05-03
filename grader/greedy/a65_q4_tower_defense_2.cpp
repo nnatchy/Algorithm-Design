@@ -1,8 +1,7 @@
 #include<iostream>
 #include<vector>
 #include<algorithm>
-
-// NOT 100
+#include<cmath>
 
 #define ll long long
 #define pll pair<ll, ll>
@@ -12,56 +11,31 @@
 
 using namespace std;
 
-ll n, m, k, w;
-
 int main()
 {
     IO;
+    ll n, m, k, w;
     cin >> n >> m >> k >> w;
-    vector<ll> p(m);
-    vector<ll> h(m);
     vector<pll> a(m);
-    for (int i = 0; i < m; i++) {
-       cin >> p[i];
-       p[i]--;
-    }
-    for (int i = 0; i < m; i++) {
-        cin >> h[i];
-    }
-    // greedy
-    for (int i = 0; i < m; i++) {
-      a[i] = make_pair(p[i], h[i]);
-    }
-    sort(a.begin(), a.end());
-    vector<ll> hasUsed(n);
-    bool checkK = false;
-    for (int i = 0; i < m && k > 0; i++) {
-        bool checkH = false;
-        ll monsterPos = a[i].first;
-        ll monsterHealth = a[i].second;
-        if (i != 0 && a[i].first == a[i - 1].first && a[i - 1].second > 0) continue;
-        for (int j = 0; j <= w && k > 0 && a[i].second > 0; j++) {
-            if (hasUsed[monsterPos - j]) continue; 
-            if (monsterPos - j < 0) break;
-            if (!hasUsed[monsterPos - j] && a[i].second > 0) {
-                a[i].second--;
-                k--;
-                hasUsed[monsterPos - j] = true;
-            }
-        }
-        for (int j = 0; j <= w && k > 0 && a[i].second > 0; j++) {
-            if (hasUsed[monsterPos + j]) continue;
-            if (monsterPos + j >= n) break;
-            if (!hasUsed[monsterPos + j] && a[i].second > 0) {
-                a[i].second--;
-                k--;
-                hasUsed[monsterPos + j] = true;
-            }
-        }
-    }
     ll sum = 0;
-    for (auto &x : a) {
-        sum += x.second;
+    for (int i = 0; i < m; i++) cin >> a[i].first;
+    for (int i = 0; i < m; i++) cin >> a[i].second, sum += a[i].second;
+    sort(a.begin(), a.end());
+    ll ans = 0;
+    ll last = 1;
+    for (int i = 0; i < m; i++) {
+        ll l = a[i].first - w;
+        l = max(l, last);
+        ll r = a[i].first + w;
+        r = min(r, n);
+        
+        ll cnt = r - l + 1;
+        cnt = min(cnt, k);
+        cnt = min(a[i].second, cnt);
+
+        ans += cnt;
+        k -= cnt;
+        last = l + cnt;
     }
-    cout << sum << "\n";
+    cout << sum - ans << "\n";
 }
